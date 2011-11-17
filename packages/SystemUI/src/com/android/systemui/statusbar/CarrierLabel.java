@@ -28,18 +28,13 @@ import android.provider.Settings;
 import android.provider.Telephony;
 import android.util.AttributeSet;
 import android.util.Slog;
-import android.view.View;
 import android.widget.TextView;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 import com.android.internal.R;
 
 /**
- * This widget display an analogic clock with two hands for hours and
- * minutes.
+ * This widget display the current network status or registered PLMN, and/or
+ * SPN if available.
  */
 public class CarrierLabel extends TextView {
     private boolean mAttached;
@@ -203,10 +198,21 @@ public class CarrierLabel extends TextView {
             setText(label);
         } else {
             setText(com.android.internal.R.string.lockscreen_carrier_default);
+        StringBuilder str = new StringBuilder();
+        if (showPlmn) {
+            if (plmn != null) {
+                str.append(plmn);
+            } else {
+                str.append(mContext.getText(R.string.lockscreen_carrier_default));
+            }
         }
+        if (showSpn && spn != null) {
+            if (showPlmn) {
+                str.append('\n');
+            }
+            str.append(spn);
+        }
+        setText(str.toString());
     }
 
-    
 }
-
-
