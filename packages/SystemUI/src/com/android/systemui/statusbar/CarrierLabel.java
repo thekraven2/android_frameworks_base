@@ -198,21 +198,8 @@ public class CarrierLabel extends TextView {
             setText(label);
         } else {
             setText(com.android.internal.R.string.lockscreen_carrier_default);
-        StringBuilder str = new StringBuilder();
-        if (showPlmn) {
-            if (plmn != null) {
-                str.append(plmn);
-            } else {
-                str.append(mContext.getText(R.string.lockscreen_carrier_default));
-            }
         }
-        if (showSpn && spn != null) {
-            if (showPlmn) {
-                str.append('\n');
-            }
-            str.append(spn);
-        }
-        setText(str.toString());
     }
+
 
 }
