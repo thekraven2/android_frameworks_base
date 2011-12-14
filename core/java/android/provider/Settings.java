@@ -1670,6 +1670,11 @@ public final class Settings {
         public static final String APPEND_FOR_LAST_AUDIBLE = "_last_audible";
 
         /**
+	 * Whether or not camera focus sound is played. 0 = played, 1 = not played.
+         */
+        public static final String CAMERA_FOCUS_MUTE = "camera_focus_mute";
+
+        /**
          * Persistent store for the system-wide default ringtone URI.
          * <p>
          * If you need to play the default ringtone at any given time, it is recommended
@@ -2299,6 +2304,23 @@ public final class Settings {
         public static final String STATUS_BAR_CLOCK = "status_bar_clock";
 
         /**
+	 * Whether to Center the clock in status bar
+	 * 0: don't center the clock
+	 * 1: center the clock
+	 * default: 1
+	 * @hide
+	 */
+        public static final String STATUS_BAR_CENTERCLOCK = "status_bar_centerclock";
+
+        /**
+	 * The color to render the status bar clock
+	 * hex value including alpha
+	 * default: ffffffff
+	 * @hide
+	 */
+        public static final String STATUS_BAR_CLOCKCOLOR = "status_bar_clockcolor";
+
+        /**
          * Whether to show the signal text or signal bars.
          * default: 0
          * 0: show signal bars
@@ -2602,6 +2624,18 @@ public final class Settings {
          */
         public static final String IN_CALL_STYLE_PREF = "in_call_style_pref";
 
+        /**
+	 * Sets the rotary lock style
+         * @hide
+         */
+        public static final String ROTARY_STYLE_PREF = "rotary_style_pref";
+
+	/**
+         * Sets the ringlock style
+         * @hide
+         */
+        public static final String RINGLOCK_STYLE_PREF = "ringlock_style_pref";
+	
         /**
          * Pulse the Trackball with Screen On.  The value is boolean (1 or 0).
          * @hide

@@ -46,7 +46,6 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:singleLine="true"
-	    android:textColor="#ffffffff"
             android:layout_weight="1.0" />
      </LinearLayout>
 
@@ -102,7 +101,6 @@
             android:layout_height="match_parent"
             android:singleLine="true"
             android:paddingRight="6dip"
-	    android:textColor="#ffffffff"
             android:gravity="center_vertical|left"
             />
 
@@ -183,10 +181,10 @@
     </LinearLayout>
 
     <LinearLayout android:id="@+id/ticker"
-	android:background="@drawable/statusbar_background"
+        android:background="@drawable/statusbar_background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"        
-	android:paddingLeft="6dip"
+        android:layout_height="match_parent"
+        android:paddingLeft="6dip"
         android:animationCache="false"
         android:orientation="horizontal" >
         <ImageSwitcher android:id="@+id/tickerIcon"
@@ -214,13 +212,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-		/>
+                />
             <TextView
                 android:textAppearance="@*android:style/TextAppearance.StatusBar.Ticker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-		/>
+                />
         </com.android.systemui.statusbar.TickerView>
     </LinearLayout>
 
