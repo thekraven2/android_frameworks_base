@@ -102,8 +102,7 @@
             android:layout_height="match_parent"
             android:singleLine="true"
             android:paddingRight="6dip"
-	    android:textColor="#ffffffff"
-            android:gravity="center_vertical|left"
+	    android:gravity="center_vertical|left"
             />
 
         <!-- The following are button layouts for tablet style statusbar buttons
@@ -214,14 +213,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-		android:textStyle="bold"
 		/>
             <TextView
                 android:textAppearance="@*android:style/TextAppearance.StatusBar.Ticker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-		android:textStyle="bold"
 		/>
         </com.android.systemui.statusbar.TickerView>
     </LinearLayout>
@@ -235,6 +232,5 @@
         android:paddingLeft="6px"
         android:paddingRight="6px"
         android:background="@android:color/transparent"
-	android:textStyle="bold"
         />
 </com.android.systemui.statusbar.CmStatusBarView>
