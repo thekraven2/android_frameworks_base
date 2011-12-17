@@ -2321,6 +2321,23 @@ public final class Settings {
         public static final String STATUS_BAR_CLOCKCOLOR = "status_bar_clockcolor";
 
         /**
+	 * The color to render the status bar background
+	 * hex value including alpha
+	 * default: ff000000
+	 * @hide
+	 */
+        public static final String STATUS_BAR_COLOR = "status_bar_color";
+
+        /**
+	 * Transparent notification bar
+	 * 0 (default) : normal status bar background image
+	 * 1 (custom) : user defined custom color
+	 * 3 (transparent) : fully transparent background image
+	 * @hide
+	 */
+        public static final String TRANSPARENT_STATUS_BAR = "transparent_status_bar";
+
+        /**
          * Whether to show the signal text or signal bars.
          * default: 0
          * 0: show signal bars
