@@ -231,6 +231,6 @@
         android:gravity="center_vertical|left"
         android:paddingLeft="6px"
         android:paddingRight="6px"
-        android:background="@android:color/transparent"
+        android:background="@drawable/statusbar_background"
         />
 </com.android.systemui.statusbar.CmStatusBarView>

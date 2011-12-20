@@ -18,6 +18,7 @@ package com.android.internal.policy.impl;
 
 import com.android.internal.R;
 import com.android.internal.telephony.IccCard;
+import com.android.internal.telephony.TelephonyProperties;
 import com.android.internal.widget.DigitalClock;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.RotarySelector;
@@ -94,9 +95,6 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
     private static final int CARRIER_TYPE_SPN = 1;
     private static final int CARRIER_TYPE_PLMN = 2;
     private static final int CARRIER_TYPE_CUSTOM = 3;
-
-    private CharSequence DEFAULT_PLMN = mContext.getResources().getText(
-            R.string.lockscreen_carrier_default);
 
     private Status mStatus = Status.Normal;
 
@@ -1170,23 +1168,27 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 
         mEmergencyCallButton.setVisibility(View.GONE); // in almost all cases
 
+	String realPlmn = SystemProperties.get(TelephonyProperties.PROPERTY_OPERATOR_ALPHA);
+        String plmn = (String) mUpdateMonitor.getTelephonyPlmn();
+        String spn = (String) mUpdateMonitor.getTelephonySpn();
+
         switch (status) {
             case Normal:
                 // text
-                if (mUpdateMonitor.getTelephonyPlmn().equals(DEFAULT_PLMN)) {
+                if ((plmn == null) || (plmn.equals(realPlmn))) {
                     mCarrier.setText(
                             getCarrierString(
-                                    mUpdateMonitor.getTelephonyPlmn(),
-                                    mUpdateMonitor.getTelephonySpn(),
-                                    CARRIER_TYPE_DEFAULT,
-                                    ""));
+                                    plmn,
+                                    spn,
+                                    mCarrierLabelType,
+                                    mCarrierLabelCustom));
                 } else {
                     mCarrier.setText(
                             getCarrierString(
-                                    mUpdateMonitor.getTelephonyPlmn(),
-                                    mUpdateMonitor.getTelephonySpn(),
-                                    mCarrierLabelType,
-                                    mCarrierLabelCustom));
+                                    plmn,
+                                    spn,
+                                    CARRIER_TYPE_DEFAULT,
+                                    ""));
                 }
 
                 // Empty now, but used for sliding tab feedback

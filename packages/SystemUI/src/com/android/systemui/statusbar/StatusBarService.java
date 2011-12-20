@@ -947,9 +947,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mTrackingView.setVisibility(View.VISIBLE);
         mExpandedView.setVisibility(View.VISIBLE);
 
-//        if (!mTicking) {
-//            setDateViewVisibility(true, com.android.internal.R.anim.fade_in);
-//        }
+        if (!mTicking) {
+            setDateViewVisibility(true, com.android.internal.R.anim.fade_in);
+        }
     }
 
     public void animateExpand() {
@@ -1455,9 +1455,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             mIcons.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
 	    mCenterClock.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in, null));
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.push_down_out, null));
-//            if (mExpandedVisible) {
-//                setDateViewVisibility(true, com.android.internal.R.anim.push_down_in);
-//            }
+            if (mExpandedVisible) {
+                setDateViewVisibility(true, com.android.internal.R.anim.push_down_in);
+            }
         }
 
         void tickerHalting() {
@@ -1469,9 +1469,9 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
             mIcons.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
 	    mCenterClock.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
             mTickerView.startAnimation(loadAnim(com.android.internal.R.anim.fade_out, null));
-//            if (mExpandedVisible) {
-//                setDateViewVisibility(true, com.android.internal.R.anim.fade_in);
-//            }
+            if (mExpandedVisible) {
+                setDateViewVisibility(true, com.android.internal.R.anim.fade_in);
+            }
         }
     }
 
