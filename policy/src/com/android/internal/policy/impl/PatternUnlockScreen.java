@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
+import android.os.SystemProperties;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import com.android.internal.R;
 import com.android.internal.telephony.IccCard;
+import com.android.internal.telephony.TelephonyProperties;
 import com.android.internal.widget.LinearLayoutWithDefaultTouchRecepient;
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.LockPatternView;
@@ -107,9 +109,6 @@ class PatternUnlockScreen extends LinearLayoutWithDefaultTouchRecepient
     private static final int CARRIER_TYPE_SPN = 1;
     private static final int CARRIER_TYPE_PLMN = 2;
     private static final int CARRIER_TYPE_CUSTOM = 3;
-
-    private CharSequence DEFAULT_PLMN = mContext.getResources().getText(
-            R.string.lockscreen_carrier_default);
 
     private int mCarrierLabelType = (Settings.System.getInt(mContext.getContentResolver(),
             Settings.System.CARRIER_LABEL_TYPE, CARRIER_TYPE_DEFAULT));
@@ -274,20 +273,23 @@ class PatternUnlockScreen extends LinearLayoutWithDefaultTouchRecepient
         mCarrier.setTextColor(0xffffffff);
 
         // until we get an update...
-        if (mUpdateMonitor.getTelephonyPlmn().equals(DEFAULT_PLMN)) {
+        String realPlmn = SystemProperties.get(TelephonyProperties.PROPERTY_OPERATOR_ALPHA);
+        String plmn = (String) mUpdateMonitor.getTelephonyPlmn();
+        String spn = (String) mUpdateMonitor.getTelephonySpn();
+        if ((plmn == null) || (plmn.equals(realPlmn))) {
             mCarrier.setText(
                     LockScreen.getCarrierString(
-                            mUpdateMonitor.getTelephonyPlmn(),
-                            mUpdateMonitor.getTelephonySpn(),
-                            CARRIER_TYPE_DEFAULT,
-                            ""));
+                            plmn,
+                            spn,
+                            mCarrierLabelType,
+                            mCarrierLabelCustom));
         } else {
             mCarrier.setText(
                     LockScreen.getCarrierString(
-                            mUpdateMonitor.getTelephonyPlmn(),
-                            mUpdateMonitor.getTelephonySpn(),
-                            mCarrierLabelType,
-                            mCarrierLabelCustom));
+                            plmn,
+                            spn,
+                            CARRIER_TYPE_DEFAULT,
+                            ""));
         }
     }
 
@@ -426,12 +428,14 @@ class PatternUnlockScreen extends LinearLayoutWithDefaultTouchRecepient
 
     /** {@inheritDoc} */
     public void onRefreshCarrierInfo(CharSequence plmn, CharSequence spn) {
-        if (plmn.equals(DEFAULT_PLMN)) {
-            mCarrier.setText(LockScreen.getCarrierString(plmn, spn,
-                    CARRIER_TYPE_DEFAULT, ""));
-        } else {
+        String realPlmn = SystemProperties.get(TelephonyProperties.PROPERTY_OPERATOR_ALPHA);
+
+        if ((plmn == null) || (plmn.equals(realPlmn))) {
             mCarrier.setText(LockScreen.getCarrierString(plmn, spn,
                     mCarrierLabelType, mCarrierLabelCustom));
+        } else {
+            mCarrier.setText(LockScreen.getCarrierString(plmn, spn,
+                    CARRIER_TYPE_DEFAULT, ""));
         }
     }
 

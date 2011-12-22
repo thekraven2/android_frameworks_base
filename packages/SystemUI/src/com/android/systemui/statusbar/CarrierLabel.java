@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.os.SystemProperties;
 import android.provider.CmSystem;
 import android.provider.Settings;
 import android.provider.Telephony;
@@ -31,6 +32,7 @@ import android.util.Slog;
 import android.widget.TextView;
 
 import com.android.internal.R;
+import com.android.internal.telephony.TelephonyProperties;
 
 /**
  * This widget display the current network status or registered PLMN, and/or
@@ -155,25 +157,32 @@ public class CarrierLabel extends TextView {
 
         boolean haveSignal = false;
         haveSignal = (showPlmn && plmn != null) || (showSpn && spn != null);
+        String realPlmn = SystemProperties.get(TelephonyProperties.PROPERTY_OPERATOR_ALPHA);
+        int carrierLabelType = mCarrierLabelType;
+
+        if (plmn != null && !(plmn.equals(realPlmn))) {
+            carrierLabelType = TYPE_DEFAULT;
+        }
 
         String label = "";
 
-        switch (mCarrierLabelType) {
+        switch (carrierLabelType) {
             default:
             case TYPE_DEFAULT:
                 StringBuilder str = new StringBuilder();
-                boolean something = false;
-                if (showPlmn && plmn != null) {
-                    str.append(plmn);
-                    something = true;
+                if (showPlmn) {
+                    if (plmn != null) {
+                        str.append(plmn);
+                    } else {
+                        str.append(mContext.getText(R.string.lockscreen_carrier_default));
+                    }
                 }
                 if (showSpn && spn != null) {
-                    if (something) {
+                    if (showPlmn) {
                         str.append('\n');
                     }
                     str.append(spn);
-                    something = true;
-                }
+	        }
 
                 label = str.toString();
                 break;

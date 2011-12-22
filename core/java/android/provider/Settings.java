@@ -1111,6 +1111,9 @@ public final class Settings {
             putInt(cr, SHOW_GTALK_SERVICE_STATUS, flag ? 1 : 0);
         }
 
+	/** @hide */
+        public static final String SWAP_VOLUME_KEYS_ORIENTATION = "swap_volume_keys_orientation";
+
         /**
          * The content:// style URL for this table
          */
@@ -1655,6 +1658,13 @@ public final class Settings {
         public static final String VIBRATE_IN_CALL = "vibrate-in-call";
 
         /**
+	 * Whether pressing the volume buttons should play a beep sound.
+         *
+         * @hide
+         */
+        public static final String VOLUME_KEY_BEEPS = "volume-key-beeps";
+
+        /**
          * The mapping of stream type (integer) to its setting.
          */
         public static final String[] VOLUME_SETTINGS = {
@@ -1668,6 +1678,11 @@ public final class Settings {
          * ringer mode change.
          */
         public static final String APPEND_FOR_LAST_AUDIBLE = "_last_audible";
+
+        /**
+	 * Whether or not camera focus sound is played. 0 = played, 1 = not played.
+         */
+        public static final String CAMERA_FOCUS_MUTE = "camera_focus_mute";
 
         /**
          * Persistent store for the system-wide default ringtone URI.
@@ -2299,6 +2314,40 @@ public final class Settings {
         public static final String STATUS_BAR_CLOCK = "status_bar_clock";
 
         /**
+	 * Whether to Center the clock in status bar
+	 * 0: don't center the clock
+	 * 1: center the clock
+	 * default: 1
+	 * @hide
+	 */
+        public static final String STATUS_BAR_CENTERCLOCK = "status_bar_centerclock";
+
+        /**
+	 * The color to render the status bar clock
+	 * hex value including alpha
+	 * default: ffffffff
+	 * @hide
+	 */
+        public static final String STATUS_BAR_CLOCKCOLOR = "status_bar_clockcolor";
+
+        /**
+	 * The color to render the status bar background
+	 * hex value including alpha
+	 * default: ff000000
+	 * @hide
+	 */
+        public static final String STATUS_BAR_COLOR = "status_bar_color";
+
+        /**
+	 * Transparent notification bar
+	 * 0 (default) : normal status bar background image
+	 * 1 (custom) : user defined custom color
+	 * 3 (transparent) : fully transparent background image
+	 * @hide
+	 */
+        public static final String TRANSPARENT_STATUS_BAR = "transparent_status_bar";
+
+        /**
          * Whether to show the signal text or signal bars.
          * default: 0
          * 0: show signal bars
@@ -2603,6 +2652,18 @@ public final class Settings {
         public static final String IN_CALL_STYLE_PREF = "in_call_style_pref";
 
         /**
+	 * Sets the rotary lock style
+         * @hide
+         */
+        public static final String ROTARY_STYLE_PREF = "rotary_style_pref";
+
+	/**
+         * Sets the ringlock style
+         * @hide
+         */
+        public static final String RINGLOCK_STYLE_PREF = "ringlock_style_pref";
+	
+        /**
          * Pulse the Trackball with Screen On.  The value is boolean (1 or 0).
          * @hide
          */
@@ -2886,6 +2947,12 @@ public final class Settings {
          * @hide
          */
         public static final String OVERSCROLL_WEIGHT = "overscroll_weight";
+
+        /**
+	 * Sets the overscroller color (edge bounce effect on lists)
+         * @hide
+         */
+        public static final String OVERSCROLL_COLOR = "overscroll_color";
 
         /**
          * Whether or not volume button music controls should be enabled to seek media tracks
