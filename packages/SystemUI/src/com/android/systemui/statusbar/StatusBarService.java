@@ -150,6 +150,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     NotificationData mLatest = new NotificationData();
     TextView mLatestTitle;
     LinearLayout mLatestItems;
+    ItemTouchDispatcher mTouchDispatcher;
     // position
     int[] mPositionTmp = new int[2];
     boolean mExpanded;
@@ -160,6 +161,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
     // the tracker view
     TrackingView mTrackingView;
+	View mNotificationBackgroundView;
     WindowManager.LayoutParams mTrackingParams;
     int mTrackingPosition; // the position of the top of the tracking view.
     private boolean mPanelSlightlyVisible;
@@ -373,6 +375,8 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
     private void makeStatusBarView(Context context) {
         Resources res = context.getResources();
 
+	mTouchDispatcher = new ItemTouchDispatcher(this);
+
         mIconSize = res.getDimensionPixelSize(com.android.internal.R.dimen.status_bar_icon_size);
 
         //Check for compact carrier layout and apply if enabled
@@ -381,6 +385,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         ExpandedView expanded = (ExpandedView)View.inflate(context,
                                                 R.layout.status_bar_expanded, null);
         expanded.mService = this;
+	expanded.mTouchDispatcher = mTouchDispatcher;
 
         CmStatusBarView sb = (CmStatusBarView)View.inflate(context, R.layout.status_bar, null);
         sb.mService = this;
@@ -389,18 +394,20 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         int transStatusBar = Settings.System.getInt(getContentResolver(), Settings.System.TRANSPARENT_STATUS_BAR, 0);
         int statusBarColor = Settings.System.getInt(getContentResolver(), Settings.System.STATUS_BAR_COLOR, 0);
             switch (transStatusBar) {
-              case 0 : // defauult based on theme
+              case 0 : // default based on theme, leave alone
+				  break;
+              case 1 : // based on ROM
                   sb.setBackgroundColor(0x00000000);
                   sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.statusbar_background));
                   break;
-              case 1 : // user defined argb hex color
-                  sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.status_bar_transparent_background));
+              case 2 : // user defined argb hex color
+				  sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.status_bar_transparent_background));
                   sb.setBackgroundColor(statusBarColor);
                   break;
-              case 2 : // semi transparent
-                  sb.setBackgroundColor(0x00000000);
+              case 3 : // semi transparent
+				  sb.setBackgroundColor(0x00000000);
                   sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.status_bar_transparent_background));
-                  break;
+                  break;			   	  
         }
 
         // figure out which pixel-format to use for the status bar.
@@ -470,7 +477,32 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mTrackingView.mService = this;
         mCloseView = (CloseDragHandle)mTrackingView.findViewById(R.id.close);
         mCloseView.mService = this;
+		mNotificationBackgroundView = (View)mTrackingView.findViewById(R.id.notificationBackground); 
 
+        // apply transparent notification background drawables 
+        int transNotificationBackground = Settings.System.getInt(getContentResolver(), Settings.System.TRANSPARENT_NOTIFICATION_BACKGROUND, 0); 
+        int notificationBackgroundColor = Settings.System.getInt(getContentResolver(), Settings.System.NOTIFICATION_BACKGROUND_COLOR, 0); 
+            switch (transNotificationBackground) { 
+              case 0 : // default based on theme, leave alone
+				  mNotificationBackgroundView.setBackgroundColor(0x00000000);
+                  mNotificationBackgroundView.setBackgroundDrawable(getResources().getDrawable(R.drawable.shade_bg));
+                  break;
+			  case 1 : // based on ROM 
+				  break;
+			  case 2 : // user defined argb hex color
+				  mNotificationBackgroundView.setBackgroundDrawable(getResources().getDrawable(R.drawable.shade_trans_bg)); 
+				  mNotificationBackgroundView.setBackgroundColor(notificationBackgroundColor);  
+				  break;  
+			  case 3 : // semi transparent
+				  mNotificationBackgroundView.setBackgroundColor(0x00000000);   
+				  mNotificationBackgroundView.setBackgroundDrawable(getResources().getDrawable(R.drawable.shade_trans_bg)); 
+				  break;
+			  case 4 : // peeping android background image 
+				  mNotificationBackgroundView.setBackgroundColor(0x00000000);      
+				  mNotificationBackgroundView.setBackgroundDrawable(getResources().getDrawable(R.drawable.status_bar_special));  
+				  break; 
+		}
+		
         mContext=context;
         updateLayout();
         updateCarrierLabel();
@@ -559,7 +591,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
         final View view = mStatusBarContainer;
 
-	int mPixelFormat = PixelFormat.RGBX_8888;
+	int mPixelFormat = PixelFormat.TRANSLUCENT;
         if (Settings.System.getInt(mContext.getContentResolver(), Settings.System.TRANSPARENT_STATUS_BAR, 0) != 0) {
           // transparent statusbar enabled?
           mPixelFormat = PixelFormat.TRANSLUCENT;
@@ -748,7 +780,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LatestItemContainer row = (LatestItemContainer) inflater.inflate(R.layout.status_bar_latest_event, parent, false);
         if ((n.flags & Notification.FLAG_ONGOING_EVENT) == 0 && (n.flags & Notification.FLAG_NO_CLEAR) == 0) {
-            row.setOnSwipeCallback(new Runnable() {
+            row.setOnSwipeCallback(mTouchDispatcher, new Runnable() {
                 public void run() {
                     try {
                         mBarService.onNotificationClear(notification.pkg, notification.tag, notification.id);
@@ -949,6 +981,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
         if (!mTicking) {
             setDateViewVisibility(true, com.android.internal.R.anim.fade_in);
+	    setNotificationIconVisibility(false, com.android.internal.R.anim.fade_out);
         }
     }
 
@@ -1623,6 +1656,11 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mDateView.setUpdates(visible);
         mDateView.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
         mDateView.startAnimation(loadAnim(anim, null));
+	if (visible) {
+            setNotificationIconVisibility(false, com.android.internal.R.anim.fade_out);
+        } else {
+            setNotificationIconVisibility(true, com.android.internal.R.anim.fade_in);
+        }
     }
 
     void setNotificationIconVisibility(boolean visible, int anim) {

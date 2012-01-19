@@ -64,6 +64,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.lang.reflect.Constructor;
 
+/* TI-OMAP custom package */
+import com.ti.omap.omap_mm_library.UiCloningService;
+
 class ServerThread extends Thread {
     private static final String TAG = "SystemServer";
     private final static boolean INCLUDE_DEMO = false;
@@ -81,7 +84,20 @@ class ServerThread extends Thread {
             boolean enableAdb = (Settings.Secure.getInt(mContentResolver,
                 Settings.Secure.ADB_ENABLED, 0) > 0);
             // setting this secure property will start or stop adbd
-           SystemProperties.set("persist.service.adb.enable", enableAdb ? "1" : "0");
+            SystemProperties.set("persist.service.adb.enable", enableAdb ? "1" : "0");
+        }
+    }
+
+    private class AdbPortObserver extends ContentObserver {
+        public AdbPortObserver() {
+            super(null);
+        }
+        @Override
+        public void onChange(boolean selfChange) {
+            int adbPort = Settings.Secure.getInt(mContentResolver,
+                Settings.Secure.ADB_PORT, 0);
+            // setting this will control whether ADB runs on TCP/IP or USB
+            SystemProperties.set("service.adb.tcp.port", Integer.toString(adbPort));
         }
     }
 
@@ -132,11 +148,13 @@ class ServerThread extends Thread {
         BluetoothHidService bluetoothHid = null;
         BluetoothNetworkService bluetoothNetwork = null;
         HeadsetObserver headset = null;
+        HDMIObserver hdmi = null;
         DockObserver dock = null;
         UsbService usb = null;
         UiModeManagerService uiMode = null;
         RecognitionManagerService recognition = null;
         ThrottleService throttle = null;
+        UiCloningService uiCloning = null;
         RingerSwitchObserver ringer = null;
 
         // Critical services...
@@ -427,6 +445,14 @@ class ServerThread extends Thread {
             }
 
             try {
+                Slog.i(TAG, "HDMI Observer");
+                // Listen for hdmi changes
+                hdmi = new HDMIObserver(context);
+            } catch (Throwable e) {
+                Slog.e(TAG, "Failure starting HDMIObserver", e);
+            }
+
+            try {
                 Slog.i(TAG, "Dock Observer");
                 // Listen for dock station changes
                 dock = new DockObserver(context, power);
@@ -521,13 +547,30 @@ class ServerThread extends Thread {
                     }
                 }
             }
+
+            if (SystemProperties.OMAP_ENHANCEMENT ) {
+                if(SystemProperties.getBoolean("tv.hdmi.uicloning.enable", false)) {
+                    try {
+                        Slog.i(TAG, "UiCloningService");
+                        uiCloning = new UiCloningService(context);
+                    } catch (Throwable e) {
+                        Slog.e(TAG, "Failure starting UiCloningService", e);
+                    }
+                }
+            }
         }
 
         // make sure the ADB_ENABLED setting value matches the secure property value
+      Settings.Secure.putInt(mContentResolver, Settings.Secure.ADB_PORT,
+                Integer.parseInt(SystemProperties.get("service.adb.tcp.port", "-1")));
+
         Settings.Secure.putInt(mContentResolver, Settings.Secure.ADB_ENABLED,
                 "1".equals(SystemProperties.get("persist.service.adb.enable")) ? 1 : 0);
 
         // register observer to listen for settings changes
+        mContentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ADB_PORT),
+                false, new AdbPortObserver());
+
         mContentResolver.registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ADB_ENABLED),
                 false, new AdbSettingsObserver());
 
