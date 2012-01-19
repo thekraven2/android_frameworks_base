@@ -63,6 +63,7 @@ public class StatusBarView extends FrameLayout {
     FixedSizeDrawable mStatusBackground;
 
     private int mSBColor;
+	private int mSBTrans;
 
     public StatusBarView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -82,10 +83,14 @@ public class StatusBarView extends FrameLayout {
         mVNotificationIcons = findViewById(R.id.notificationIcons);
 
         ContentResolver resolver = mContext.getContentResolver();
-        mSBColor = (Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_COLOR, 1));
-
-        mVSBBackground.setBackgroundColor(mSBColor);
+        mSBTrans = (Settings.System.getInt(resolver, 
+                Settings.System.TRANSPARENT_STATUS_BAR, 1)); 
+        if ( mSBTrans == 2) { 
+           mSBColor = (Settings.System.getInt(resolver, 
+                   Settings.System.STATUS_BAR_COLOR, 1)); 
+ 
+           mVSBBackground.setBackgroundColor(mSBColor); 
+        } 
 
         mVNotificationIcons.setBackgroundColor(0x00000000);
         mVStatusIcons.setBackgroundColor(0x00000000);

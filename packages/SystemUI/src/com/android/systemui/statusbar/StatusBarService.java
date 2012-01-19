@@ -161,6 +161,7 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
 
     // the tracker view
     TrackingView mTrackingView;
+	View mNotificationBackgroundView;
     WindowManager.LayoutParams mTrackingParams;
     int mTrackingPosition; // the position of the top of the tracking view.
     private boolean mPanelSlightlyVisible;
@@ -393,18 +394,20 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         int transStatusBar = Settings.System.getInt(getContentResolver(), Settings.System.TRANSPARENT_STATUS_BAR, 0);
         int statusBarColor = Settings.System.getInt(getContentResolver(), Settings.System.STATUS_BAR_COLOR, 0);
             switch (transStatusBar) {
-              case 0 : // defauult based on theme
+              case 0 : // default based on theme, leave alone
+				  break;
+              case 1 : // based on ROM
                   sb.setBackgroundColor(0x00000000);
                   sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.statusbar_background));
                   break;
-              case 1 : // user defined argb hex color
-                  sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.status_bar_transparent_background));
+              case 2 : // user defined argb hex color
+				  sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.status_bar_transparent_background));
                   sb.setBackgroundColor(statusBarColor);
                   break;
-              case 2 : // semi transparent
-                  sb.setBackgroundColor(0x00000000);
+			  case 3 : // semi transparent
+				  sb.setBackgroundColor(0x00000000);
                   sb.setBackgroundDrawable(getResources().getDrawable(R.drawable.status_bar_transparent_background));
-                  break;
+                  break;			   	  
         }
 
         // figure out which pixel-format to use for the status bar.
@@ -474,7 +477,32 @@ public class StatusBarService extends Service implements CommandQueue.Callbacks 
         mTrackingView.mService = this;
         mCloseView = (CloseDragHandle)mTrackingView.findViewById(R.id.close);
         mCloseView.mService = this;
+		mNotificationBackgroundView = (View)mTrackingView.findViewById(R.id.notificationBackground); 
 
+        // apply transparent notification background drawables 
+        int transNotificationBackground = Settings.System.getInt(getContentResolver(), Settings.System.TRANSPARENT_NOTIFICATION_BACKGROUND, 0); 
+        int notificationBackgroundColor = Settings.System.getInt(getContentResolver(), Settings.System.NOTIFICATION_BACKGROUND_COLOR, 0); 
+            switch (transNotificationBackground) { 
+              case 0 : // default based on theme, leave alone
+				  mNotificationBackgroundView.setBackgroundColor(0x00000000);
+                  mNotificationBackgroundView.setBackgroundDrawable(getResources().getDrawable(R.drawable.shade_bg));
+                  break;
+			  case 1 : // based on ROM 
+				  break;
+			  case 2 : // user defined argb hex color
+				  mNotificationBackgroundView.setBackgroundDrawable(getResources().getDrawable(R.drawable.shade_trans_bg)); 
+				  mNotificationBackgroundView.setBackgroundColor(notificationBackgroundColor);  
+				  break;  
+			  case 3 : // semi transparent
+				  mNotificationBackgroundView.setBackgroundColor(0x00000000);   
+				  mNotificationBackgroundView.setBackgroundDrawable(getResources().getDrawable(R.drawable.shade_trans_bg)); 
+				  break;
+			  case 4 : // peeping android background image 
+				  mNotificationBackgroundView.setBackgroundColor(0x00000000);      
+				  mNotificationBackgroundView.setBackgroundDrawable(getResources().getDrawable(R.drawable.status_bar_special));  
+				  break; 
+		}
+		
         mContext=context;
         updateLayout();
         updateCarrierLabel();

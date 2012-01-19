@@ -96,7 +96,7 @@ public final class CmSystem {
             return getStyleById(Integer.valueOf(id));
         }
 
-        static public int getIdByStyle(LockscreenStyle lockscreenstyle){
+        static public int getIdByStyle(LockscreenStyle lockscreenstyle) {
             switch (lockscreenstyle){
                 case Slider:
                     return 1;
@@ -182,16 +182,19 @@ public final class CmSystem {
         }
     }
 
-    public enum RinglockStyle{
+    public enum RinglockStyle {
         Bubble,
-        Revamped;
+        Revamped,
+        Holo;
 
-        static public RinglockStyle getStyleById(int id){
-            switch (id){
+        static public RinglockStyle getStyleById(int id) {
+            switch (id) {
                 case 1:
                     return Bubble;
                 case 2:
                     return Revamped;
+                case 3:
+                    return Holo;
                 default:
                     return Bubble;
             }
@@ -207,6 +210,8 @@ public final class CmSystem {
                     return 1;
                 case Revamped:
                     return 2;
+                case Holo:
+                    return 3;
                 default:
                     return 1;
             }

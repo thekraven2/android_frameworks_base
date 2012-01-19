@@ -2339,15 +2339,35 @@ public final class Settings {
         public static final String STATUS_BAR_COLOR = "status_bar_color";
 
         /**
-	 * Transparent notification bar
-	 * 0 (default) : normal status bar background image
-	 * 1 (custom) : user defined custom color
-	 * 3 (transparent) : fully transparent background image
-	 * @hide
-	 */
+		 * Transparent notification bar
+		 * 0 (theme)      : theme settings 
+         * 1 (default)     : normal status bar background image 
+         * 2 (custom)      : user defined custom color 
+         * 3 (transparent) : fully transparent background image 
+		 * @hide
+		 */
         public static final String TRANSPARENT_STATUS_BAR = "transparent_status_bar";
 
         /**
+		 * The color to render the notification dropdown background 
+         * hex value including alpha 
+         * default: ff000000 
+         * @hide 
+         */ 
+        public static final String NOTIFICATION_BACKGROUND_COLOR = "notification_background_color"; 
+ 
+        /** 
+         * Transparent notification dropdown background 
+         * 0 (theme)      : theme settings 
+         * 1 (ROM)     : normal notification dropdown background image
+         * 2 (custom)      : user defined custom color 
+		 * 3 (transparent) : fully transparent background image
+		 * 4 (special) : peeping android background image
+         * @hide 
+         */ 
+        public static final String TRANSPARENT_NOTIFICATION_BACKGROUND = "transparent_notification_background"; 
+ 
+        /** 
          * Whether to show the signal text or signal bars.
          * default: 0
          * 0: show signal bars
@@ -2652,12 +2672,12 @@ public final class Settings {
         public static final String IN_CALL_STYLE_PREF = "in_call_style_pref";
 
         /**
-	 * Sets the rotary lock style
+	     * Sets the rotary lock style
          * @hide
          */
         public static final String ROTARY_STYLE_PREF = "rotary_style_pref";
 
-	/**
+	    /**
          * Sets the ringlock style
          * @hide
          */
@@ -2687,7 +2707,7 @@ public final class Settings {
           */
          public static final String TRACKBALL_NOTIFICATION_PULSE_ORDER = "trackball_pulse_in_order";
 
-	/**
+	    /**
           * Beldn Notification Colors.  The value is boolean (1 or 0).
           * @hide
           */
@@ -3611,7 +3631,12 @@ public final class Settings {
          */
         public static final String ADB_ENABLED = "adb_enabled";
 
-        /**
+		/**
+		 * The TCP/IP port to run ADB on, or -1 for USB 
+         */ 
+        public static final String ADB_PORT = "adb_port"; 
+ 
+        /** 
          * Whether to show ADB notifications.
          * @hide
          */
@@ -3782,6 +3807,12 @@ public final class Settings {
          * @hide
          */
         public static final String ASSISTED_GPS_ENABLED = "assisted_gps_enabled";
+
+	/**
+         * External BT GPS device
+         * @hide
+         */
+        public static final String EXTERNAL_GPS_BT_DEVICE = "0";
 
         /**
          * The Logging ID (a unique 64-bit value) as a hex string.
@@ -5149,4 +5180,5 @@ public final class Settings {
     public static String getGTalkDeviceId(long androidId) {
         return "android-" + Long.toHexString(androidId);
     }
+
 }

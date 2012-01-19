@@ -112,6 +112,11 @@ public class QwertyKeyListener extends BaseKeyListener {
             return true;
         }
 
+	if (i == KeyCharacterMap.VOICE_INPUT) {
+            // TODO: Actually do something
+            return true;
+        }
+
         if (i == KeyCharacterMap.HEX_INPUT) {
             int start;
 
