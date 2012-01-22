@@ -349,15 +349,7 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
         mCreationOrientation = configuration.orientation;
 
         mKeyboardHidden = configuration.hardKeyboardHidden;
-
-        //Ringlock resource setup
-        int mRinglockStyle = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.RINGLOCK_STYLE_PREF, RinglockStyle.getIdByStyle(RinglockStyle.Bubble));
-        int resSecNorm=(mRinglockStyle == RinglockStyle.getIdByStyle(RinglockStyle.Bubble) ?
-                R.drawable.jog_ring_secback_normal : R.drawable.jog_ring_rev_secback_normal);
-        int resRingGreen=(mRinglockStyle == RinglockStyle.getIdByStyle(RinglockStyle.Bubble) ?
-                R.drawable.jog_ring_ring_green : R.drawable.jog_ring_rev_ring_green);
-
+        
         if (LockPatternKeyguardView.DEBUG_CONFIGURATION) {
             Log.v(TAG, "***** CREATING LOCK SCREEN", new RuntimeException());
             Log.v(TAG, "Cur orient=" + mCreationOrientation
@@ -1222,10 +1214,6 @@ class LockScreen extends LinearLayout implements KeyguardScreen, KeyguardUpdateM
 
         mEmergencyCallButton.setVisibility(View.GONE); // in almost all cases
 		
-		String realPlmn = SystemProperties.get(TelephonyProperties.PROPERTY_OPERATOR_ALPHA);  
-        String plmn = (String) mUpdateMonitor.getTelephonyPlmn();  
-        String spn = (String) mUpdateMonitor.getTelephonySpn();  
-
 	String realPlmn = SystemProperties.get(TelephonyProperties.PROPERTY_OPERATOR_ALPHA);
         String plmn = (String) mUpdateMonitor.getTelephonyPlmn();
         String spn = (String) mUpdateMonitor.getTelephonySpn();

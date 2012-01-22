@@ -209,11 +209,7 @@ public class RingSelector extends ViewGroup {
         private int alignCenterX;
         private int alignCenterY;
 
-<<<<<<< HEAD
-	private int backgroundId;
-=======
         private int backgroundId;
->>>>>>> ac4320d
 
         /**
          * Constructor
@@ -230,11 +226,7 @@ public class RingSelector extends ViewGroup {
             ring.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
 
-<<<<<<< HEAD
-	    backgroundId = ringId;
-=======
             backgroundId = ringId;
->>>>>>> ac4320d
 
             // Create target
             target = new ImageView(parent.getContext());
@@ -266,20 +258,9 @@ public class RingSelector extends ViewGroup {
         }
 
         void setRingBackgroundResource(int ringId) {
-<<<<<<< HEAD
-	    backgroundId = ringId;
-=======
             backgroundId = ringId;
->>>>>>> ac4320d
             ring.setBackgroundResource(ringId);
 	}
-
-        void setHighlighted(int highlightId) {
-            if (highlightId == 0) {
-                highlightId = backgroundId;
-            }
-            ring.setBackgroundResource(highlightId);
-        }
 
         void setHighlighted(int highlightId) {
             if (highlightId == 0) {
@@ -1081,16 +1062,7 @@ public class RingSelector extends ViewGroup {
             }
         }
         if (ringsTouched && !mPrevTriggered) {
-<<<<<<< HEAD
-            int ringlockStyle = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.RINGLOCK_STYLE_PREF, RinglockStyle.getIdByStyle(RinglockStyle.Bubble));
-            int resHighlight = (ringlockStyle == RinglockStyle.getIdByStyle(RinglockStyle.Bubble) ?
-                    R.drawable.jog_ring_ring_pressed_red : R.drawable.jog_ring_rev_ring_pressed_red);
-
-            mCurrentRing.setHighlighted(resHighlight);
-=======
             mCurrentRing.setHighlighted(mHighlightBackgroundResId);
->>>>>>> ac4320d
             mPrevTriggered = true;
         } else if (!ringsTouched && mPrevTriggered) {
             mCurrentRing.setHighlighted(0);
